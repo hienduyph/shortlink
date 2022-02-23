@@ -1,0 +1,10 @@
+[package]
+name = "shortlink-web"
+version = "0.1.0"
+edition = "2021"
+
+# frontend stack
+[dependencies]
+yew = { git = "https://github.com/yewstack/yew/" }
+
+
