@@ -3,9 +3,9 @@ extern crate diesel;
 extern crate dotenv;
 
 pub mod apps;
-pub mod handlers;
 pub mod entity;
+pub mod handlers;
 
-mod schema;
 mod diesel_impl;
 mod infra;
+mod schema;

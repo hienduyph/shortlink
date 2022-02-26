@@ -20,6 +20,7 @@ diesel::table! {
         last_name -> Varchar,
         email -> Varchar,
         password -> Varchar,
+        password_salt -> Varchar,
         updated_by -> Nullable<Int8>,
         created_at -> Timestamptz,
         updated_at -> Nullable<Timestamptz>,
@@ -27,7 +28,4 @@ diesel::table! {
     }
 }
 
-diesel::allow_tables_to_appear_in_same_query!(
-    links,
-    users,
-);
+diesel::allow_tables_to_appear_in_same_query!(links, users,);

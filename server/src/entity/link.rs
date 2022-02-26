@@ -1,5 +1,5 @@
 use chrono::NaiveDateTime;
-use diesel::{Queryable, Insertable};
+use diesel::{Insertable, Queryable};
 
 use crate::schema::links;
 

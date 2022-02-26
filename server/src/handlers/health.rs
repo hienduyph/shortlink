@@ -9,7 +9,7 @@ struct HealthResponse {
     now: DateTime<Utc>,
 }
 
-pub(crate) async fn health_handle() -> impl Responder {
+pub(crate) async fn health_handler() -> impl Responder {
     Json(HealthResponse {
         status: "ok".into(),
         version: env!("CARGO_PKG_VERSION").into(),
