@@ -1,8 +1,11 @@
-use actix_web::{web::Json, Responder};
-use argon2::{Argon2, PasswordHash, PasswordVerifier};
+use actix_web::{
+    web::{Data, Json},
+    Responder,
+};
 use serde::{Deserialize, Serialize};
 
-use crate::entity::User;
+use super::Result;
+use crate::services::security::{AuthIn, SecurityService};
 
 #[derive(Deserialize)]
 pub(crate) struct LoginRequest {
@@ -15,28 +18,19 @@ struct LoginResponse {
     token: String,
 }
 
-fn check_password(raw: &str, hashed: String, _salt: String) -> bool {
-    let ag = Argon2::default();
-    match PasswordHash::new(&hashed) {
-        Ok(parsed) => ag.verify_password(raw.as_bytes(), &parsed).is_ok(),
-        Err(err) => {
-            println!("{}", err);
-            false
-        }
+pub(crate) async fn login_handler(
+    req: Json<LoginRequest>,
+    security_svc: Data<SecurityService>,
+) -> Result<impl Responder> {
+    println!("Req");
+    match security_svc
+        .auth(&AuthIn {
+            email: req.email.to_string(),
+            password: req.password.to_string(),
+        })
+        .await
+    {
+        Ok(resp) => Ok(Json(resp)),
+        Err(err) => Err(err),
     }
-}
-
-pub(crate) async fn login_handler(req: Json<LoginRequest>) -> impl Responder {
-    // find user by email first
-    let user = User {
-        email: req.email.to_string(),
-        ..User::default()
-    };
-    if !(check_password(&req.password, user.password, user.password_salt)) {
-        // password failed
-    }
-    // let's compare the password
-    Json(LoginResponse {
-        token: "mock token".to_string(),
-    })
 }

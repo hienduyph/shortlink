@@ -20,7 +20,6 @@ diesel::table! {
         last_name -> Varchar,
         email -> Varchar,
         password -> Varchar,
-        password_salt -> Varchar,
         updated_by -> Nullable<Int8>,
         created_at -> Timestamptz,
         updated_at -> Nullable<Timestamptz>,

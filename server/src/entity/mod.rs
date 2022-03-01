@@ -1,5 +1,7 @@
+mod error;
 mod link;
 mod user;
 
-pub(crate) use link::*;
-pub(crate) use user::*;
+pub use error::*;
+pub use link::*;
+pub use user::*;
