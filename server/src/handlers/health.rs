@@ -1,4 +1,4 @@
-use actix_web::{web::Json, Responder};
+use actix_web::{get, web::Json, Responder};
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 
@@ -9,6 +9,7 @@ struct HealthResponse {
     now: DateTime<Utc>,
 }
 
+#[get("/")]
 pub(crate) async fn health_handler() -> impl Responder {
     Json(HealthResponse {
         status: "ok".into(),

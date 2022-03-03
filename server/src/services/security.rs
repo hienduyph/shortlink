@@ -7,18 +7,18 @@ use lazy_static::lazy_static;
 use serde::{Deserialize, Serialize};
 use validator::{Validate, ValidationError};
 
-use crate::entity::{UserQueryRepo, XError};
+use crate::entity::{user, XError};
 
 lazy_static! {
     static ref PASSWORD: FancyRegex = FancyRegex::new(r#"^(?=.{6,30})(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*()_+=/\-|\\{}\[\]\:\;\"\',.<>?`~]).*$"#).unwrap();
 }
 
 pub(crate) struct SecurityService {
-    user_repo: Arc<dyn UserQueryRepo>,
+    user_repo: Arc<dyn user::UserQueryRepo>,
 }
 
 impl SecurityService {
-    pub fn new(user_repo: Arc<dyn UserQueryRepo>) -> Self {
+    pub fn new(user_repo: Arc<dyn user::UserQueryRepo>) -> Self {
         SecurityService {
             user_repo: user_repo.clone(),
         }

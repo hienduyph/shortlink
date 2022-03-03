@@ -1,7 +1,6 @@
 mod error;
-mod link;
-mod user;
+
+pub mod link;
+pub mod user;
 
 pub use error::*;
-pub use link::*;
-pub use user::*;

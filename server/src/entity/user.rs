@@ -1,14 +1,14 @@
 use async_trait::async_trait;
 use chrono::{NaiveDateTime, Utc};
-use diesel::{Insertable, Queryable};
-
-use crate::schema::users;
+use sea_orm::entity::prelude::*;
+use serde::{Deserialize, Serialize};
 
 use super::XError;
 
-#[derive(Debug, Clone, Queryable, Insertable)]
-#[table_name = "users"]
-pub struct User {
+#[derive(Clone, Debug, PartialEq, DeriveEntityModel, Serialize, Deserialize)]
+#[sea_orm(table_name = "users")]
+pub struct Model {
+    #[sea_orm(primary_key)]
     pub id: i64,
     pub first_name: String,
     pub last_name: String,
@@ -20,9 +20,9 @@ pub struct User {
     pub status: i32,
 }
 
-impl Default for User {
+impl Default for Model {
     fn default() -> Self {
-        User {
+        Model {
             id: 0,
             first_name: "".to_string(),
             last_name: "".to_string(),
@@ -37,7 +37,13 @@ impl Default for User {
 
 #[async_trait]
 pub trait UserQueryRepo: Send + Sync {
-    async fn get_by_email(&self, email: &str) -> Result<User, XError>;
+    async fn get_by_email(&self, email: &str) -> Result<Model, XError>;
 
-    async fn get_by_id(&self, id: i64) -> Result<User, XError>;
+    async fn get_by_id(&self, id: i64) -> Result<Model, XError>;
 }
+
+#[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]
+pub enum Relation {
+}
+
+impl ActiveModelBehavior for ActiveModel {}

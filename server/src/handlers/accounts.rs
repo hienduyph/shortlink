@@ -1,4 +1,5 @@
 use actix_web::{
+    post,
     web::{Data, Json},
     Responder,
 };
@@ -18,11 +19,11 @@ struct LoginResponse {
     token: String,
 }
 
+#[post("/login")]
 pub(crate) async fn login_handler(
     req: Json<LoginRequest>,
     security_svc: Data<SecurityService>,
 ) -> Result<impl Responder> {
-    println!("Req");
     match security_svc
         .auth(&AuthIn {
             email: req.email.to_string(),
