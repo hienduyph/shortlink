@@ -4,7 +4,7 @@ use actix_cors::Cors;
 use actix_web::{http, middleware::Logger, web, App, HttpServer};
 
 use crate::{
-    entity::user, infra::db_conn, postgres_impl::user::UserQueryImpl,
+    entity::user, infra::db_conn, postgres_impl::user::{UserQueryPostgresImpl, UserModifierPostgresImpl},
     services::security::SecurityService,
 };
 
@@ -13,10 +13,14 @@ pub async fn serve() -> std::io::Result<()> {
     let db = Arc::new(db_conn().await);
 
     // repo
-    let user_query_repo: Arc<dyn user::UserQueryRepo> = Arc::new(UserQueryImpl::new(db));
+    let user_query_repo: Arc<dyn user::UserQueryRepo> = Arc::new(UserQueryPostgresImpl::new(db.clone()));
+    let user_modifier_repo: Arc<dyn user::UserModifierRepo> = Arc::new(UserModifierPostgresImpl::new(db.clone()));
 
     // init the core svc
-    let security_service = Arc::new(SecurityService::new(user_query_repo.clone()));
+    let security_service = Arc::new(SecurityService::new(
+        user_query_repo.clone(),
+        user_modifier_repo.clone(),
+    ));
 
     env_logger::init_from_env(env_logger::Env::new().default_filter_or("info"));
 

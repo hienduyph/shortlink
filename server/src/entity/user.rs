@@ -20,6 +20,11 @@ pub struct Model {
     pub status: i32,
 }
 
+#[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]
+pub enum Relation {}
+
+impl ActiveModelBehavior for ActiveModel {}
+
 impl Default for Model {
     fn default() -> Self {
         Model {
@@ -42,8 +47,7 @@ pub trait UserQueryRepo: Send + Sync {
     async fn get_by_id(&self, id: i64) -> Result<Model, XError>;
 }
 
-#[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]
-pub enum Relation {
+#[async_trait]
+pub trait UserModifierRepo: Send + Sync {
+    async fn create(&self, user: Model) -> Result<Model, XError>;
 }
-
-impl ActiveModelBehavior for ActiveModel {}

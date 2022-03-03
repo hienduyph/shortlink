@@ -5,9 +5,12 @@ use fancy_regex::Regex as FancyRegex;
 use jsonwebtoken::{encode, Algorithm, EncodingKey, Header};
 use lazy_static::lazy_static;
 use serde::{Deserialize, Serialize};
-use validator::{Validate, ValidationError};
+use validator::{Validate, ValidateArgs, ValidationError};
 
-use crate::entity::{user, XError};
+use crate::{
+    entity::{user, XError},
+    utils::password,
+};
 
 lazy_static! {
     static ref PASSWORD: FancyRegex = FancyRegex::new(r#"^(?=.{6,30})(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*()_+=/\-|\\{}\[\]\:\;\"\',.<>?`~]).*$"#).unwrap();
@@ -15,12 +18,17 @@ lazy_static! {
 
 pub(crate) struct SecurityService {
     user_repo: Arc<dyn user::UserQueryRepo>,
+    user_modifier_repo: Arc<dyn user::UserModifierRepo>,
 }
 
 impl SecurityService {
-    pub fn new(user_repo: Arc<dyn user::UserQueryRepo>) -> Self {
+    pub fn new(
+        user_repo: Arc<dyn user::UserQueryRepo>,
+        user_modifier_repo: Arc<dyn user::UserModifierRepo>,
+    ) -> Self {
         SecurityService {
-            user_repo: user_repo.clone(),
+            user_repo,
+            user_modifier_repo,
         }
     }
 }
@@ -42,6 +50,15 @@ pub fn validate_password(password: &str) -> Result<(), ValidationError> {
 
     Ok(())
 }
+pub fn validate_confirmed_password(
+    confirmed_password: &str,
+    password: &str,
+) -> Result<(), ValidationError> {
+    if confirmed_password != password {
+        return Err(ValidationError::new("Confirmed Password mistmatch"));
+    }
+    Ok(())
+}
 
 #[derive(Serialize)]
 pub struct AuthOut {
@@ -58,6 +75,20 @@ struct TokenClaims {
     email: String,
     id: i64,
     exp: usize,
+}
+
+#[derive(Deserialize, Serialize, Debug, Clone, Validate)]
+pub struct RegisterIn {
+    #[validate(email)]
+    pub email: String,
+    #[validate(length(min = 1, max = 100))]
+    pub first_name: String,
+    #[validate(length(min = 1, max = 100))]
+    pub last_name: String,
+    #[validate(length(min = 1), custom = "validate_password")]
+    pub password: String,
+    #[validate(custom(function = "validate_confirmed_password", arg = "&'v_a str"))]
+    pub confirmed_password: String,
 }
 
 const BEARER: &str = "Bearer ";
@@ -82,6 +113,21 @@ impl SecurityService {
             email: user.email,
             id: user.id,
         })
+    }
+
+    pub async fn register(&self, req: &RegisterIn) -> Result<user::Model, XError> {
+        req.validate_args(&req.confirmed_password)?;
+        let (hashed_password, _) = password::generate(&req.password)?;
+        let user_model = user::Model {
+            email: req.email.clone(),
+            first_name: req.first_name.clone(),
+            last_name: req.last_name.clone(),
+            password: hashed_password,
+            created_at: Utc::now().naive_local(),
+            ..user::Model::default()
+        };
+        let user = self.user_modifier_repo.create(user_model).await?;
+        Ok(user)
     }
 
     fn create_jwt(uid: i64, email: &str) -> Result<String, XError> {

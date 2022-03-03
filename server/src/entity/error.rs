@@ -102,3 +102,13 @@ impl From<ValidationErrors> for XError {
         XError::bad_request(&e.to_string())
     }
 }
+impl From<sea_orm::DbErr> for XError {
+    fn from(other: sea_orm::DbErr) -> Self {
+        return Self::internal(&other.to_string())
+    }
+}
+impl From<argon2::password_hash::Error> for XError {
+    fn from(other: argon2::password_hash::Error) -> Self {
+        Self::internal(&other.to_string())
+    }
+}

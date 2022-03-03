@@ -2,6 +2,8 @@ use argon2::password_hash::rand_core::OsRng;
 use argon2::PasswordHasher;
 use argon2::{password_hash::SaltString, Argon2, PasswordHash, PasswordVerifier};
 
+use crate::entity::XError;
+
 pub fn verify(raw: &str, hashed: String) -> bool {
     let ag = Argon2::default();
     match PasswordHash::new(&hashed) {
@@ -13,9 +15,7 @@ pub fn verify(raw: &str, hashed: String) -> bool {
     }
 }
 
-pub type Error = argon2::password_hash::Error;
-
-pub fn generate(pwd: &str) -> Result<(String, String), Error> {
+pub fn generate(pwd: &str) -> Result<(String, String), XError> {
     let salt = SaltString::generate(&mut OsRng);
     let ag = Argon2::default();
     let pwd_hashed = ag.hash_password(pwd.as_bytes(), &salt)?.to_string();

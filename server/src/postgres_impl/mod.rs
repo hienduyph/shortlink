@@ -1,5 +1,5 @@
-use sqlx::{postgres::PgPoolOptions, PgPool};
+use sea_orm::DatabaseConnection;
 
 pub mod user;
 
-pub type DBconn = PgPool;
+pub type DBconn = DatabaseConnection;

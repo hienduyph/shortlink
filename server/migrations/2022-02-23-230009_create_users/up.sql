@@ -7,6 +7,7 @@ CREATE TABLE IF NOT EXISTS users (
   updated_by BIGINT,
   created_at Timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated_at Timestamptz,
-  status INT
+  status INT,
+  UNIQUE(email)
 );
 
