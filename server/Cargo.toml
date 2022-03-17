@@ -42,3 +42,6 @@ fancy-regex = "0.8.0"
 
 sqlx = { version = "0.5", features = [ "runtime-tokio-rustls" , "postgres", "chrono", "migrate", "uuid", "json"], default-features = false }
 sea-orm = { version = "^0.6", features = [ "sqlx-postgres", "runtime-tokio-rustls", "macros", "debug-print" ], default-features = false }
+
+sha2 = "0.10.2"
+base-62 = "0.1.1"

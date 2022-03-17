@@ -1,5 +1,5 @@
 use async_trait::async_trait;
-use chrono::NaiveDateTime;
+use chrono::{NaiveDateTime, Utc};
 use sea_orm::entity::prelude::*;
 
 use super::XError;
@@ -18,12 +18,26 @@ pub struct Model {
     pub updated_by: i64,
 }
 
+impl Default for Model {
+    fn default() -> Self {
+        Model {
+            id: 0,
+            shorten: "".to_string(),
+            link_type: 0,
+            url: "".to_string(),
+            created_at: Utc::now().naive_utc(),
+            updated_at: Utc::now().naive_utc(),
+            created_by: 0,
+            updated_by: 0,
+        }
+    }
+}
+
+
 #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]
 pub enum Relation {}
 
 impl ActiveModelBehavior for ActiveModel {}
-
-
 
 #[async_trait]
 pub trait LinkQueryRepo: Send + Sync {

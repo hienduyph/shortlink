@@ -5,7 +5,7 @@ CREATE TABLE IF NOT EXISTS links (
   url TEXT NOT NULL,
   created_by BIGINT,
   updated_by BIGINT,
-  created_at Timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  updated_at Timestamptz
+  created_at Timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at Timestamp
 );
 

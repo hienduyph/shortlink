@@ -104,7 +104,7 @@ impl From<ValidationErrors> for XError {
 }
 impl From<sea_orm::DbErr> for XError {
     fn from(other: sea_orm::DbErr) -> Self {
-        return Self::internal(&other.to_string())
+        return Self::internal(&other.to_string());
     }
 }
 impl From<argon2::password_hash::Error> for XError {

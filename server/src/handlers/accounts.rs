@@ -6,7 +6,7 @@ use actix_web::{
 use serde::{Deserialize, Serialize};
 
 use super::Result;
-use crate::services::security::{AuthIn, SecurityService, self};
+use crate::services::security::{self, AuthIn, SecurityService};
 
 #[derive(Deserialize)]
 pub(crate) struct LoginRequest {
@@ -24,16 +24,13 @@ pub(crate) async fn login_handler(
     req: Json<LoginRequest>,
     security_svc: Data<SecurityService>,
 ) -> Result<impl Responder> {
-    match security_svc
+    security_svc
         .auth(&AuthIn {
             email: req.email.to_string(),
             password: req.password.to_string(),
         })
         .await
-    {
-        Ok(resp) => Ok(Json(resp)),
-        Err(err) => Err(err),
-    }
+        .map(|resp| Json(resp))
 }
 
 #[derive(Serialize)]
@@ -48,8 +45,10 @@ pub(crate) async fn register_handler(
     security_svc: Data<SecurityService>,
 ) -> Result<impl Responder> {
     log::debug!("got body {:?}", form);
-    match security_svc.register(&form.into_inner()).await  {
-        Ok(resp) => Ok(Json(RegisterResponse{id: resp.id, email: resp.email})),
-        Err(err) => Err(err),
-    }
+    security_svc.register(&form.into_inner()).await.map(|resp| {
+        Json(RegisterResponse {
+            id: resp.id,
+            email: resp.email,
+        })
+    })
 }

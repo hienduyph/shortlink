@@ -10,7 +10,7 @@ pub struct LinkImpl {
 }
 
 impl LinkImpl {
-    fn new(db: Arc<super::DBconn>) -> Self {
+    pub fn new(db: Arc<super::DBconn>) -> Self {
         Self { conn: db }
     }
 }
