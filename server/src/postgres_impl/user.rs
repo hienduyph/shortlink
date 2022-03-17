@@ -1,7 +1,7 @@
 use std::sync::Arc;
 
 use async_trait::async_trait;
-use sea_orm::{entity::prelude::*};
+use sea_orm::{entity::prelude::*, ActiveValue::NotSet};
 
 use crate::entity::{user, user::Entity as User, XError};
 
@@ -30,11 +30,9 @@ impl user::UserQueryRepo for UserQueryPostgresImpl {
     }
 
     async fn get_by_id(&self, id: i64) -> Result<user::Model, XError> {
-        if let Some(u) = User::find_by_id(id)
-            .one(self.db.as_ref())
-            .await? {
-                return Ok(u);
-            }
+        if let Some(u) = User::find_by_id(id).one(self.db.as_ref()).await? {
+            return Ok(u);
+        }
         return Err(XError::notfound("user not found"));
     }
 }
@@ -45,14 +43,17 @@ pub struct UserModifierPostgresImpl {
 
 impl UserModifierPostgresImpl {
     pub fn new(db: Arc<super::DBconn>) -> Self {
-        UserModifierPostgresImpl{ db }
+        UserModifierPostgresImpl { db }
     }
 }
 
 #[async_trait]
-impl user::UserModifierRepo for UserModifierPostgresImpl{
+impl user::UserModifierRepo for UserModifierPostgresImpl {
     async fn create(&self, user: user::Model) -> Result<user::Model, XError> {
-        let amodel: user::ActiveModel = user.into();
+        let mut amodel: user::ActiveModel = user.into();
+        // this is auto increment field, so we must ignore this!!!
+        amodel.id = NotSet;
+
         let u: user::Model = amodel.insert(self.db.as_ref()).await?;
         Ok(u)
     }

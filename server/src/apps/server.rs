@@ -1,7 +1,7 @@
 use std::sync::Arc;
 
 use actix_cors::Cors;
-use actix_web::{http, middleware::Logger, web, App, HttpServer};
+use actix_web::{middleware::Logger, web, App, HttpServer};
 
 use crate::{
     entity::user, infra::db_conn, postgres_impl::user::{UserQueryPostgresImpl, UserModifierPostgresImpl},
@@ -28,11 +28,7 @@ pub async fn serve() -> std::io::Result<()> {
 
     let addr = "0.0.0.0:8000";
     let server = HttpServer::new(move || {
-        let cors = Cors::default()
-            .send_wildcard()
-            .allowed_methods(vec!["GET", "POST"])
-            .allowed_headers(vec![http::header::AUTHORIZATION, http::header::ACCEPT])
-            .allowed_header(http::header::CONTENT_TYPE)
+        let cors = Cors::permissive()
             .max_age(3600);
 
         App::new()
@@ -43,9 +39,10 @@ pub async fn serve() -> std::io::Result<()> {
             ))
             .service(crate::handlers::health_handler)
             .service(crate::handlers::login_handler)
+            .service(crate::handlers::register_handler)
     })
     .bind(addr)?;
 
-    println!("Listening in {}", addr);
+    log::info!("Listening in {}", addr);
     server.run().await
 }

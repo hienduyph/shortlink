@@ -5,8 +5,8 @@ CREATE TABLE IF NOT EXISTS users (
   email VARCHAR(100) NOT NULL,
   password VARCHAR(122) NOT NULL,
   updated_by BIGINT,
-  created_at Timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  updated_at Timestamptz,
+  created_at Timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at Timestamp,
   status INT,
   UNIQUE(email)
 );

@@ -47,6 +47,7 @@ pub(crate) async fn register_handler(
     form: Json<security::RegisterIn>,
     security_svc: Data<SecurityService>,
 ) -> Result<impl Responder> {
+    log::debug!("got body {:?}", form);
     match security_svc.register(&form.into_inner()).await  {
         Ok(resp) => Ok(Json(RegisterResponse{id: resp.id, email: resp.email})),
         Err(err) => Err(err),
