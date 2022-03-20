@@ -232,3 +232,4 @@ dist
 
 node_modules
 pkg
+.parcel-cache

@@ -1,3 +1,6 @@
-import { run_app } from '../Cargo.toml'
+import init, { run_app } from '../pkg'
 
-run_app()
+(async () => {
+  console.log(await init());
+  run_app();
+})()
