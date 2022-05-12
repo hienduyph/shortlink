@@ -1,7 +1,7 @@
 use actix_web::{get, http::header, post, web, HttpResponse, Responder};
 use serde::Serialize;
 
-use crate::services::link::{LinkService, LinkCreation};
+use crate::services::link::{LinkCreation, LinkService};
 
 #[get("/x/{key}")]
 pub(crate) async fn expand_link_handler(
@@ -18,13 +18,11 @@ pub(crate) async fn expand_link_handler(
     Ok(resp)
 }
 
-
 #[derive(Serialize, Debug, Clone)]
 pub struct LinkCreationResp {
     shorten: String,
     url: String,
 }
-
 
 #[post("/x")]
 pub(crate) async fn create_link_handler(
@@ -32,7 +30,7 @@ pub(crate) async fn create_link_handler(
     link_svc: web::Data<LinkService>,
 ) -> super::Result<impl Responder> {
     link_svc.create(&input).await.map(|v| {
-        web::Json(LinkCreationResp{
+        web::Json(LinkCreationResp {
             shorten: v.shorten,
             url: v.url,
         })
