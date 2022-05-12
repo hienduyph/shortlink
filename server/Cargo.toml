@@ -14,34 +14,34 @@ actix-threadpool = "0.3.3"
 actix-service = "2.0.2"
 
 rand = "0.8.5"
-serde = "1.0.136"
-serde_derive = "1.0.136"
-serde_json = "1.0.79"
+serde = "1.0.137"
+serde_derive = "1.0.137"
+serde_json = "1.0.81"
 chrono = { version = "0.4.19", features = ["serde"] }
-uuid = { version = "0.8.2", features = ["serde", "v4"] }
+uuid = { version = "1.0.0", features = ["serde", "v4"] }
 derive_more = "0.99.17"
 dotenv = "0.15.0"
 envy = "0.4.2"
 env_logger = "0.9.0"
 lazy_static = "1.4.0"
 listenfd = "0.5.0"
-log = "0.4.14"
-rayon = "1.5.1"
+log = "0.4.17"
+rayon = "1.5.2"
 redis-async = "0.12.1"
-validator = { version = "0.14.0", features = ["derive"] }
+validator = { version = "0.15.0", features = ["derive"] }
 
-tokio = { version = "1.17.0", features = ["rt-multi-thread", "time", "fs", "macros", "net"] }
+tokio = { version = "1.18.2", features = ["rt-multi-thread", "time", "fs", "macros", "net"] }
 futures = { version = "0.3.21", default-features = false, features = ["alloc"] }
 tokio-stream = { version = "0.1.8", features = ["net"] }
 async-stream = "0.3.3"
-async-trait = "0.1.52"
+async-trait = "0.1.53"
 
 argon2 = "0.4.0"
-jsonwebtoken = "8.0.1"
-fancy-regex = "0.8.0"
+jsonwebtoken = "8.1.0"
+fancy-regex = "0.10.0"
 
-sqlx = { version = "0.5.11", features = [ "runtime-tokio-rustls" , "postgres", "chrono", "migrate", "uuid", "json"], default-features = false }
-sea-orm = { version = "0.6.0", features = [ "sqlx-postgres", "runtime-tokio-rustls", "macros", "debug-print" ], default-features = false }
+sqlx = { version = "0.5.13", features = [ "runtime-tokio-rustls" , "postgres", "chrono", "migrate", "uuid", "json"], default-features = false }
+sea-orm = { version = "0.8.0", features = [ "sqlx-postgres", "runtime-tokio-rustls", "macros", "debug-print" ], default-features = false }
 
 sha2 = "0.10.2"
 base-62 = "0.1.1"

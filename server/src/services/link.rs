@@ -2,7 +2,7 @@ use std::sync::Arc;
 
 use serde::{Deserialize, Serialize};
 use sha2::{Digest, Sha256};
-use validator::{Validate, ValidateArgs, ValidationError};
+use validator::Validate;
 
 use crate::entity::{link, XError};
 
@@ -69,5 +69,9 @@ impl LinkService {
         }
         let v = self.link_create.create(model).await?;
         Ok(v)
+    }
+
+    pub fn hello() -> String {
+        "My name is q".into()
     }
 }
